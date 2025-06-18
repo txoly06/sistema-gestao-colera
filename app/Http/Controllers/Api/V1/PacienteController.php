@@ -3,16 +3,53 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\V1\ApiController;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Paciente;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Controller()
+ */
 class PacienteController extends ApiController
 {
     /**
      * Display a listing of the resource.
+     * 
+     * @OA\Get(
+     *     path="/pacientes",
+     *     summary="Lista todos os pacientes",
+     *     description="Retorna uma lista de todos os pacientes cadastrados no sistema",
+     *     operationId="listaPacientes",
+     *     tags={"Pacientes"},
+     *     security={"bearerAuth": {}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista recuperada com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Lista de pacientes recuperada com sucesso"),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="nome", type="string", example="João Silva"),
+     *                 @OA\Property(property="bi", type="string", example="123456789LA042"),
+     *                 @OA\Property(property="data_nascimento", type="string", format="date", example="1990-01-01"),
+     *                 @OA\Property(property="sexo", type="string", example="Masculino"),
+     *                 @OA\Property(property="estado", type="string", example="Ativo"),
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Não autorizado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro do servidor"
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
@@ -32,6 +69,62 @@ class PacienteController extends ApiController
 
     /**
      * Store a newly created resource in storage.
+     * 
+     * @OA\Post(
+     *     path="/pacientes",
+     *     summary="Cadastra um novo paciente",
+     *     description="Cria um novo registro de paciente no sistema",
+     *     operationId="criarPaciente",
+     *     tags={"Pacientes"},
+     *     security={"bearerAuth": {}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nome", "bi", "data_nascimento", "sexo", "endereco", "provincia"},
+     *             @OA\Property(property="nome", type="string", example="João Silva"),
+     *             @OA\Property(property="bi", type="string", example="123456789LA042"),
+     *             @OA\Property(property="data_nascimento", type="string", format="date", example="1990-01-01"),
+     *             @OA\Property(property="sexo", type="string", example="Masculino", enum={"Masculino", "Feminino"}),
+     *             @OA\Property(property="telefone", type="string", example="+244 923456789"),
+     *             @OA\Property(property="endereco", type="string", example="Rua Principal, 123"),
+     *             @OA\Property(property="provincia", type="string", example="Luanda"),
+     *             @OA\Property(property="email", type="string", format="email", example="joao.silva@exemplo.com"),
+     *             @OA\Property(property="latitude", type="number", format="float", example=-8.838333),
+     *             @OA\Property(property="longitude", type="number", format="float", example=13.234444),
+     *             @OA\Property(property="historico_saude", type="string", example="Hipertensão controlada"),
+     *             @OA\Property(property="grupo_sanguineo", type="string", example="O+", enum={"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"}),
+     *             @OA\Property(property="tem_alergias", type="boolean", example=false),
+     *             @OA\Property(property="alergias", type="string", example="Penicilina"),
+     *             @OA\Property(property="estado", type="string", example="Ativo", enum={"Ativo", "Em_Tratamento", "Recuperado", "Óbito"}),
+     *             @OA\Property(property="unidade_saude_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paciente criado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Paciente criado com sucesso"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="nome", type="string"),
+     *                 @OA\Property(property="bi", type="string")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validação"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Não autorizado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro do servidor"
+     *     )
+     * )
      */
     public function store(Request $request): JsonResponse
     {
@@ -102,6 +195,61 @@ class PacienteController extends ApiController
 
     /**
      * Display the specified resource.
+     *
+     * @OA\Get(
+     *     path="/pacientes/{id}",
+     *     summary="Exibe detalhes de um paciente específico",
+     *     description="Retorna os dados completos de um paciente cadastrado",
+     *     operationId="mostrarPaciente",
+     *     tags={"Pacientes"},
+     *     security={"bearerAuth": {}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID do paciente",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dados recuperados com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Paciente encontrado com sucesso"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="nome", type="string"),
+     *                 @OA\Property(property="bi", type="string"),
+     *                 @OA\Property(property="data_nascimento", type="string", format="date"),
+     *                 @OA\Property(property="sexo", type="string"),
+     *                 @OA\Property(property="telefone", type="string"),
+     *                 @OA\Property(property="endereco", type="string"),
+     *                 @OA\Property(property="provincia", type="string"),
+     *                 @OA\Property(property="email", type="string"),
+     *                 @OA\Property(property="latitude", type="number", format="float"),
+     *                 @OA\Property(property="longitude", type="number", format="float"),
+     *                 @OA\Property(property="historico_saude", type="string"),
+     *                 @OA\Property(property="grupo_sanguineo", type="string"),
+     *                 @OA\Property(property="tem_alergias", type="boolean"),
+     *                 @OA\Property(property="alergias", type="string"),
+     *                 @OA\Property(property="estado", type="string"),
+     *                 @OA\Property(property="unidade_saude_id", type="integer")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Paciente não encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Paciente não encontrado")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Não autorizado"
+     *     )
+     * )
      */
     public function show($id): JsonResponse
     {
@@ -120,6 +268,68 @@ class PacienteController extends ApiController
 
     /**
      * Update the specified resource in storage.
+     *
+     * @OA\Put(
+     *     path="/pacientes/{id}",
+     *     summary="Atualiza dados de um paciente",
+     *     description="Atualiza as informações de um paciente cadastrado",
+     *     operationId="atualizarPaciente",
+     *     tags={"Pacientes"},
+     *     security={"bearerAuth": {}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID do paciente",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="nome", type="string", example="João Silva"),
+     *             @OA\Property(property="bi", type="string", example="123456789LA042"),
+     *             @OA\Property(property="data_nascimento", type="string", format="date", example="1990-01-01"),
+     *             @OA\Property(property="sexo", type="string", example="Masculino", enum={"Masculino", "Feminino"}),
+     *             @OA\Property(property="telefone", type="string", example="+244 923456789"),
+     *             @OA\Property(property="endereco", type="string", example="Rua Principal, 123"),
+     *             @OA\Property(property="provincia", type="string", example="Luanda"),
+     *             @OA\Property(property="email", type="string", format="email", example="joao.silva@exemplo.com"),
+     *             @OA\Property(property="latitude", type="number", format="float", example=-8.838333),
+     *             @OA\Property(property="longitude", type="number", format="float", example=13.234444),
+     *             @OA\Property(property="historico_saude", type="string", example="Hipertensão controlada"),
+     *             @OA\Property(property="grupo_sanguineo", type="string", example="O+", enum={"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"}),
+     *             @OA\Property(property="tem_alergias", type="boolean", example=false),
+     *             @OA\Property(property="alergias", type="string", example="Penicilina"),
+     *             @OA\Property(property="estado", type="string", example="Ativo", enum={"Ativo", "Em_Tratamento", "Recuperado", "Óbito"}),
+     *             @OA\Property(property="unidade_saude_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paciente atualizado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Paciente atualizado com sucesso"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Paciente não encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validação"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Não autorizado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro do servidor"
+     *     )
+     * )
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -205,6 +415,38 @@ class PacienteController extends ApiController
 
     /**
      * Remove the specified resource from storage.
+     * 
+     * @OA\Delete(
+     *     path="/pacientes/{id}",
+     *     summary="Remove um paciente",
+     *     description="Exclui um paciente do sistema (soft delete)",
+     *     operationId="excluirPaciente",
+     *     tags={"Pacientes"},
+     *     security={"bearerAuth": {}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID do paciente",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paciente excluído com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Paciente excluído com sucesso")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Paciente não encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Não autorizado"
+     *     )
+     * )
      */
     public function destroy($id): JsonResponse
     {
@@ -227,6 +469,112 @@ class PacienteController extends ApiController
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse('Erro ao eliminar paciente: ' . $e->getMessage(), 500);
+        }
+    }
+    
+    /**
+     * Generate QR Code for a patient
+     * 
+     * @OA\Get(
+     *     path="/pacientes/{id}/qrcode",
+     *     summary="Gerar QR Code para identificação de paciente",
+     *     description="Gera um código QR com dados do paciente para identificação rápida",
+     *     operationId="gerarQrCodePaciente",
+     *     tags={"Pacientes"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID do paciente",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="download",
+     *         in="query",
+     *         description="Se definido como true, retorna a imagem para download",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="QR Code gerado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="QR Code gerado com sucesso"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="paciente_id", type="integer", example=1),
+     *                 @OA\Property(property="paciente_nome", type="string", example="João Silva"),
+     *                 @OA\Property(property="qrcode", type="string", example="data:image/png;base64,iVBORw0KGgoAA...")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Paciente não encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Não autorizado"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro do servidor"
+     *     )
+     * )
+     */
+    public function generateQrCode($id): JsonResponse
+    {
+        // Verificar permissão
+        if (!auth()->user()->can('ver pacientes')) {
+            return $this->errorResponse('Não autorizado', 403);
+        }
+        
+        try {
+            $paciente = Paciente::findOrFail($id);
+            
+            // Preparar dados para o QR Code
+            $data = [
+                'id' => $paciente->id,
+                'nome' => $paciente->nome,
+                'bi' => $paciente->bi,
+                'data_nascimento' => $paciente->data_nascimento,
+                'links' => [
+                    'perfil' => route('api.v1.pacientes.show', $paciente->id),
+                    'triagens' => route('api.v1.pacientes.triagens', $paciente->id)
+                ],
+                'acesso_em' => now()->toIso8601String(),
+                'verificação' => md5($paciente->id . $paciente->created_at->toIso8601String())
+            ];
+            
+            // Gerar QR Code como imagem
+            $qrcode = QrCode::format('png')
+                            ->size(300)
+                            ->errorCorrection('H')
+                            ->margin(1)
+                            ->generate(json_encode($data));
+            
+            // Opção 1: Retornar QR code como imagem
+            if (request()->query('download', false)) {
+                $headers = [
+                    'Content-Type' => 'image/png',
+                    'Content-Disposition' => 'attachment; filename="paciente-' . $paciente->id . '-qrcode.png"'
+                ];
+                
+                return response($qrcode, 200, $headers);
+            }
+            
+            // Opção 2: Retornar QR code como dados base64 (padrão)
+            return $this->successResponse([
+                'paciente_id' => $paciente->id,
+                'paciente_nome' => $paciente->nome,
+                'qrcode' => 'data:image/png;base64,' . base64_encode($qrcode)
+            ], 'QR Code gerado com sucesso');
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $this->errorResponse('Paciente não encontrado', 404);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Erro ao gerar QR Code: ' . $e->getMessage(), 500);
         }
     }
 }

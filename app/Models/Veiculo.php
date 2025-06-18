@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Veiculo extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
     
     /**
      * A tabela associada ao modelo.
@@ -42,6 +44,26 @@ class Veiculo extends Model
         'responsavel',
         'contato_responsavel',
     ];
+    
+    /**
+     * Configurações do Activity Log.
+     *
+     * @return \Spatie\Activitylog\LogOptions
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'placa', 'modelo', 'tipo', 'status', 'capacidade_pacientes',
+                'latitude', 'longitude', 'ultima_atualizacao_localizacao',
+                'equipamentos', 'nivel_combustivel', 'ponto_cuidado_id', 'unidade_saude_id'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(function(string $eventName) {
+                return "Veículo {$this->placa} ({$this->modelo}) foi {$eventName}";
+            });
+    }
     
     /**
      * Os atributos que devem ser convertidos.

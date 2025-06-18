@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Crypt;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Paciente extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     /**
      * A tabela associada ao modelo.
@@ -67,6 +69,24 @@ class Paciente extends Model
         'historico_saude_encrypted',
         'alergias_encrypted',
     ];
+    
+    /**
+     * Configurações do Activity Log.
+     *
+     * @return \Spatie\Activitylog\LogOptions
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'nome', 'bi', 'data_nascimento', 'sexo', 'endereco', 'provincia',
+                'latitude', 'longitude', 'grupo_sanguineo', 'tem_alergias', 'estado', 
+                'unidade_saude_id'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Paciente {$this->nome} foi {$eventName}");
+    }
 
     /**
      * Atributos appended ao resultado.
@@ -186,5 +206,13 @@ class Paciente extends Model
     public function casosCólera()
     {
         return $this->hasMany(CasoColera::class);
+    }
+
+    /**
+     * Get the triagens for the paciente.
+     */
+    public function triagens()
+    {
+        return $this->hasMany(Triagem::class);
     }
 }

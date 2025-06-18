@@ -17,11 +17,13 @@ use Illuminate\Support\Facades\Route;
 // Versão 1 da API
 Route::prefix('v1')->name('api.v1.')->group(function () {
     
-    // Rotas públicas
-    Route::post('/login', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'login'])->name('login');
+    // Rotas públicas - limite de 5 tentativas por minuto para evitar ataques de força bruta
+    Route::middleware(['throttle:5,1'])->group(function () {
+        Route::post('/login', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'login'])->name('login');
+    });
     
-    // Rotas protegidas
-    Route::middleware('auth:sanctum')->group(function () {
+    // Rotas protegidas - limite padrão de 60 requisições por minuto para usuários autenticados
+    Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
         // Autenticação
         Route::post('/logout', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'logout'])->name('logout');
         Route::get('/user', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'user'])->name('user');
@@ -38,10 +40,15 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::apiResource('pacientes', \App\Http\Controllers\Api\V1\PacienteController::class);
         Route::get('pacientes/{paciente}/qrcode', [\App\Http\Controllers\Api\V1\PacienteController::class, 'generateQrCode'])
             ->name('pacientes.qrcode');
+        Route::get('pacientes/{paciente}/triagens', [\App\Http\Controllers\Api\V1\TriagemController::class, 'triagensPorPaciente'])
+            ->name('pacientes.triagens')
+            ->middleware('permission:ver triagens');
             
-        // Pontos de Cuidados de Emergência
-        Route::apiResource('pontos-cuidado', \App\Http\Controllers\Api\V1\PontoCuidadoController::class)
-            ->middleware('permission:ver pontos-cuidado|criar pontos-cuidado|editar pontos-cuidado|eliminar pontos-cuidado');
+        // Pontos de Cuidados de Emergência - endpoint crítico com limite mais restritivo
+        Route::middleware(['throttle:30,1'])->group(function () {
+            Route::apiResource('pontos-cuidado', \App\Http\Controllers\Api\V1\PontoCuidadoController::class)
+                ->middleware('permission:ver pontos-cuidado|criar pontos-cuidado|editar pontos-cuidado|eliminar pontos-cuidado');
+        });
         Route::put('pontos-cuidado/{id}/prontidao', [\App\Http\Controllers\Api\V1\PontoCuidadoController::class, 'updateProntidao'])
             ->name('pontos-cuidado.prontidao')
             ->middleware('permission:atualizar-prontidao pontos-cuidado');
@@ -60,9 +67,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             ->middleware('permission:casos.relatorios')
             ->name('casos.estatisticas');
         
-        // Veículos
-        Route::apiResource('veiculos', \App\Http\Controllers\Api\V1\VeiculoController::class)
-            ->middleware('permission:ver veiculos|criar veiculos|editar veiculos|eliminar veiculos');
+        // Veículos - endpoint crítico com limite mais restritivo
+        Route::middleware(['throttle:30,1'])->group(function () {
+            Route::apiResource('veiculos', \App\Http\Controllers\Api\V1\VeiculoController::class)
+                ->middleware('permission:ver veiculos|criar veiculos|editar veiculos|eliminar veiculos');
+        });
         Route::put('veiculos/{id}/status', [\App\Http\Controllers\Api\V1\VeiculoController::class, 'updateStatus'])
             ->name('veiculos.status')
             ->middleware('permission:editar veiculos');
@@ -82,5 +91,84 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // Encaminhamentos
         Route::apiResource('encaminhamentos', \App\Http\Controllers\Api\V1\EncaminhamentoController::class)
             ->middleware('permission:encaminhamentos.listar|encaminhamentos.visualizar|encaminhamentos.criar|encaminhamentos.editar|encaminhamentos.eliminar');
+        
+        // Sintomas e Triagens - endpoint crítico com limite mais restritivo
+        Route::middleware(['throttle:30,1'])->group(function () {
+            Route::apiResource('triagens', \App\Http\Controllers\Api\V1\TriagemController::class)
+                ->middleware('permission:ver triagens|criar triagens|editar triagens|eliminar triagens');
+        });
+        Route::put('triagens/{id}/status', [\App\Http\Controllers\Api\V1\TriagemController::class, 'atualizarStatus'])
+            ->name('triagens.status')
+            ->middleware('permission:editar triagens');
+        Route::post('triagens/{id}/encaminhar', [\App\Http\Controllers\Api\V1\TriagemController::class, 'encaminhar'])
+            ->name('triagens.encaminhar')
+            ->middleware('permission:editar triagens');
+        Route::get('sintomas', [\App\Http\Controllers\Api\V1\TriagemController::class, 'sintomas'])
+            ->name('triagens.sintomas');
+            
+        // Mapas e Geolocalização - serviço externo, maior proteção de limite
+        Route::prefix('mapa')->name('mapa.')->middleware(['throttle:20,1'])->group(function () {
+            Route::get('pontos', [\App\Http\Controllers\Api\V1\MapaController::class, 'todosOsPontos'])
+                ->name('pontos')
+                ->middleware('permission:ver pontos-cuidado|ver veiculos');
+                
+            Route::get('pontos-cuidado-proximos', [\App\Http\Controllers\Api\V1\MapaController::class, 'pontosCuidadoProximos'])
+                ->name('pontos-proximos')
+                ->middleware('permission:ver pontos-cuidado');
+                
+            Route::get('veiculos-proximos', [\App\Http\Controllers\Api\V1\MapaController::class, 'veiculosProximos'])
+                ->name('veiculos-proximos')
+                ->middleware('permission:ver veiculos');
+                
+            Route::post('calcular-rota', [\App\Http\Controllers\Api\V1\MapaController::class, 'calcularRota'])
+                ->name('rota');
+                
+            Route::post('geocodificar', [\App\Http\Controllers\Api\V1\MapaController::class, 'geocodificarEndereco'])
+                ->name('geocodificar');
+                
+            Route::get('heat-map-casos', [\App\Http\Controllers\Api\V1\MapaController::class, 'heatMapCasos'])
+                ->name('heat-map')
+                ->middleware('permission:ver triagens');
+        });
+        
+        // Relatórios e Dashboards - operações pesadas, limite mais restritivo
+        Route::prefix('relatorios')->name('relatorios.')->middleware(['permission:ver relatorios', 'throttle:15,1'])->group(function () {
+            Route::get('estatisticas-gerais', [\App\Http\Controllers\Api\V1\RelatorioController::class, 'estatisticasGerais'])
+                ->name('estatisticas');
+                
+            Route::get('casos-por-provincia', [\App\Http\Controllers\Api\V1\RelatorioController::class, 'casosPorProvincia'])
+                ->name('casos-provincia');
+                
+            Route::get('evolucao-temporal', [\App\Http\Controllers\Api\V1\RelatorioController::class, 'evolucaoTemporal'])
+                ->name('evolucao');
+                
+            Route::get('distribuicao-urgencia', [\App\Http\Controllers\Api\V1\RelatorioController::class, 'distribuicaoUrgencia'])
+                ->name('urgencia');
+                
+            Route::get('ocupacao-pontos-cuidado', [\App\Http\Controllers\Api\V1\RelatorioController::class, 'ocupacaoPontosCuidado'])
+                ->name('ocupacao');
+                
+            Route::get('dados-demograficos', [\App\Http\Controllers\Api\V1\RelatorioController::class, 'dadosDemograficos'])
+                ->name('demograficos');
+        });
+            
+        Route::get('triagens-criticas', [\App\Http\Controllers\Api\V1\TriagemController::class, 'triagensCriticas'])
+            ->name('triagens.criticas')
+            ->middleware('permission:ver triagens');
+            
+        // Auditoria - apenas para administradores
+        Route::prefix('auditoria')->name('auditoria.')->middleware(['permission:ver auditoria', 'throttle:10,1'])->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\V1\AuditoriaController::class, 'index'])
+                ->name('index');
+                
+            Route::get('resumo', [\App\Http\Controllers\Api\V1\AuditoriaController::class, 'resumo'])
+                ->name('resumo');
+                
+            Route::get('{id}', [\App\Http\Controllers\Api\V1\AuditoriaController::class, 'show'])
+                ->name('show');
+                
+            Route::get('usuario/{usuarioId}', [\App\Http\Controllers\Api\V1\AuditoriaController::class, 'porUsuario'])
+                ->name('por-usuario');
+        });
     });
 });

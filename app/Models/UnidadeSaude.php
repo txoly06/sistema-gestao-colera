@@ -7,6 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @OA\Schema(
+ *     schema="UnidadeSaude",
+ *     title="Unidade de Saúde",
+ *     description="Modelo de Unidade de Saúde",
+ *     @OA\Property(property="id", type="integer", format="int64", example=1),
+ *     @OA\Property(property="gabinete_provincial_id", type="integer", format="int64", example=2),
+ *     @OA\Property(property="nome", type="string", example="Hospital Provincial de Luanda"),
+ *     @OA\Property(property="diretor_medico", type="string", example="Dra. Ana Silva"),
+ *     @OA\Property(property="tipo", type="string", example="Hospital_Geral"),
+ *     @OA\Property(property="endereco", type="string", example="Av. Principal, 123"),
+ *     @OA\Property(property="telefone", type="string", example="+244 923456789"),
+ *     @OA\Property(property="email", type="string", format="email", example="hospital@saude.gov.ao"),
+ *     @OA\Property(property="latitude", type="number", format="float", example=-8.839),
+ *     @OA\Property(property="longitude", type="number", format="float", example=13.289),
+ *     @OA\Property(property="capacidade", type="integer", example=200),
+ *     @OA\Property(property="tem_isolamento", type="boolean", example=true),
+ *     @OA\Property(property="capacidade_isolamento", type="integer", example=20),
+ *     @OA\Property(property="casos_ativos", type="integer", example=45),
+ *     @OA\Property(property="leitos_ocupados", type="integer", example=120),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time"),
+ *     @OA\Property(property="deleted_at", type="string", format="date-time", nullable=true)
+ * )
+ */
 class UnidadeSaude extends Model
 {
     use HasFactory, SoftDeletes;

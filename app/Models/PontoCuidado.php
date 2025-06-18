@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class PontoCuidado extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     /**
      * A tabela associada com o modelo.
@@ -42,6 +44,26 @@ class PontoCuidado extends Model
         'status',
         'unidade_saude_id',
     ];
+    
+    /**
+     * Configurações do Activity Log.
+     *
+     * @return \Spatie\Activitylog\LogOptions
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'nome', 'descricao', 'endereco', 'capacidade_maxima', 'capacidade_atual',
+                'provincia', 'municipio', 'latitude', 'longitude', 'tem_ambulancia',
+                'ambulancias_disponiveis', 'nivel_prontidao', 'status', 'unidade_saude_id'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(function(string $eventName) {
+                return "Ponto de Cuidado {$this->nome} foi {$eventName}";
+            });
+    }
 
     /**
      * Os atributos que devem ser convertidos.

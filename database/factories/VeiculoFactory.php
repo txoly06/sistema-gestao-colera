@@ -131,4 +131,16 @@ class VeiculoFactory extends Factory
             ];
         });
     }
+    
+    /**
+     * Definir o veículo como em trânsito.
+     */
+    public function emTransito()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'status' => 'em_transito',
+            ];
+        });
+    }
 }

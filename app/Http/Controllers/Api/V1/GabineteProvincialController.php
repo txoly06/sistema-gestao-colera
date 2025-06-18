@@ -9,12 +9,53 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Controller()
+ * @OA\Tag(name="Gabinetes", description="Operações relacionadas aos gabinetes provinciais")
+ */
 class GabineteProvincialController extends ApiController
 {
     /**
      * Listar todos os gabinetes provinciais.
      *
      * @return \Illuminate\Http\JsonResponse
+     * 
+     * @OA\Get(
+     *     path="/gabinetes-provinciais",
+     *     summary="Listar todos os gabinetes provinciais",
+     *     description="Retorna uma lista de todos os gabinetes provinciais cadastrados",
+     *     operationId="listarGabinetesProvinciais",
+     *     tags={"Gabinetes"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operação bem-sucedida",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Gabinetes provinciais listados com sucesso."),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="nome", type="string", example="Gabinete Provincial de Luanda"),
+     *                 @OA\Property(property="endereco", type="string", example="Av. 4 de Fevereiro, 42"),
+     *                 @OA\Property(property="telefone", type="string", example="+244 923456789"),
+     *                 @OA\Property(property="email", type="string", example="gabinete.luanda@saude.gov.ao"),
+     *                 @OA\Property(property="diretor", type="string", example="Dr. João Silva"),
+     *                 @OA\Property(property="latitude", type="number", format="float", example=-8.838333),
+     *                 @OA\Property(property="longitude", type="number", format="float", example=13.234444),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno do servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Erro ao listar gabinetes provinciais: [mensagem de erro]")
+     *         )
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
@@ -31,6 +72,58 @@ class GabineteProvincialController extends ApiController
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
+     * 
+     * @OA\Post(
+     *     path="/gabinetes-provinciais",
+     *     summary="Criar um novo gabinete provincial",
+     *     description="Cria um novo registro de gabinete provincial",
+     *     operationId="criarGabineteProvincial",
+     *     tags={"Gabinetes"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nome", "endereco", "telefone", "email", "diretor", "latitude", "longitude"},
+     *             @OA\Property(property="nome", type="string", example="Gabinete Provincial de Benguela"),
+     *             @OA\Property(property="endereco", type="string", example="Rua Principal, 123"),
+     *             @OA\Property(property="telefone", type="string", example="+244 923456789"),
+     *             @OA\Property(property="email", type="string", example="gabinete.benguela@saude.gov.ao"),
+     *             @OA\Property(property="diretor", type="string", example="Dra. Maria Santos"),
+     *             @OA\Property(property="latitude", type="number", format="float", example=-12.5789),
+     *             @OA\Property(property="longitude", type="number", format="float", example=13.4071)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Gabinete provincial criado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Gabinete provincial criado com sucesso."),
+     *             @OA\Property(property="data", type="object", ref="#/components/schemas/GabineteProvincial")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Não autorizado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Não autorizado a criar gabinetes provinciais")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validação",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Erro de validação"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno do servidor"
+     *     )
+     * )
      */
     public function store(Request $request): JsonResponse
     {
@@ -110,8 +203,61 @@ class GabineteProvincialController extends ApiController
      * Atualizar um gabinete provincial específico.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\GabineteProvincial  $gabineteProvincial
+     * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
+     * 
+     * @OA\Put(
+     *     path="/gabinetes-provinciais/{id}",
+     *     summary="Atualizar um gabinete provincial",
+     *     description="Atualiza os dados de um gabinete provincial existente",
+     *     operationId="atualizarGabineteProvincial",
+     *     tags={"Gabinetes"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID do gabinete provincial",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="nome", type="string", example="Gabinete Provincial de Benguela (Atualizado)"),
+     *             @OA\Property(property="endereco", type="string", example="Av. Principal, 456"),
+     *             @OA\Property(property="telefone", type="string", example="+244 923456780"),
+     *             @OA\Property(property="email", type="string", example="gabinete.benguela.novo@saude.gov.ao"),
+     *             @OA\Property(property="diretor", type="string", example="Dr. António Correia"),
+     *             @OA\Property(property="latitude", type="number", format="float", example=-12.5790),
+     *             @OA\Property(property="longitude", type="number", format="float", example=13.4075)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Gabinete provincial atualizado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Gabinete provincial atualizado com sucesso."),
+     *             @OA\Property(property="data", type="object", ref="#/components/schemas/GabineteProvincial")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Não autorizado"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Gabinete provincial não encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validação"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro interno do servidor"
+     *     )
+     * )
      */
     public function update(Request $request, $id): JsonResponse
     {
