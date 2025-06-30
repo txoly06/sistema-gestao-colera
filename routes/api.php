@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +30,29 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // Autenticação
         Route::post('/logout', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'logout'])->name('logout');
         Route::get('/user', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'user'])->name('user');
+        Route::get('/perfil', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'perfil']);
+        
+        // Rotas para gerenciamento de usuários
+        Route::prefix('usuarios')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\V1\UserController::class, 'index']);
+            Route::get('/{id}', [\App\Http\Controllers\Api\V1\UserController::class, 'show']);
+            Route::post('/', [\App\Http\Controllers\Api\V1\UserController::class, 'store']);
+            Route::put('/{id}', [\App\Http\Controllers\Api\V1\UserController::class, 'update']);
+            Route::delete('/{id}', [\App\Http\Controllers\Api\V1\UserController::class, 'destroy']);
+            Route::post('/{id}/bloquear', [\App\Http\Controllers\Api\V1\UserController::class, 'bloquear']);
+            Route::post('/{id}/desbloquear', [\App\Http\Controllers\Api\V1\UserController::class, 'desbloquear']);
+        });
+        
+        // Rotas para gerenciamento de papéis e permissões
+        Route::prefix('papeis')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\V1\RoleController::class, 'index']);
+            Route::get('/{id}', [\App\Http\Controllers\Api\V1\RoleController::class, 'show']);
+            Route::post('/', [\App\Http\Controllers\Api\V1\RoleController::class, 'store']);
+            Route::put('/{id}', [\App\Http\Controllers\Api\V1\RoleController::class, 'update']);
+            Route::delete('/{id}', [\App\Http\Controllers\Api\V1\RoleController::class, 'destroy']);
+        });
+        
+        Route::get('/permissoes', [\App\Http\Controllers\Api\V1\RoleController::class, 'listarPermissoes']);
         
         // Gabinetes Provinciais
         Route::apiResource('gabinetes', \App\Http\Controllers\Api\V1\GabineteProvincialController::class)
@@ -57,15 +83,18 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             ->middleware('permission:atualizar-capacidade pontos-cuidado');
         
         // Fichas Clínicas
-        Route::apiResource('fichas', \App\Http\Controllers\Api\V1\FichaClinicaController::class)
+       /* Route::apiResource('fichas', \App\Http\Controllers\Api\V1\FichaClinicaController::class)
             ->middleware('permission:fichas.listar|fichas.visualizar|fichas.criar|fichas.editar|fichas.eliminar');
+        */
         
         // Casos de Cólera
+        /* Comentado temporariamente até a implementação do controlador
         Route::apiResource('casos', \App\Http\Controllers\Api\V1\CasoColerController::class)
             ->middleware('permission:casos.listar|casos.visualizar|casos.criar|casos.editar|casos.eliminar');
         Route::get('casos/estatisticas', [\App\Http\Controllers\Api\V1\CasoColerController::class, 'estatisticas'])
             ->middleware('permission:casos.relatorios')
             ->name('casos.estatisticas');
+        */
         
         // Veículos - endpoint crítico com limite mais restritivo
         Route::middleware(['throttle:30,1'])->group(function () {
@@ -89,8 +118,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             ->middleware('permission:ver veiculos');
         
         // Encaminhamentos
+        /* Comentado temporariamente até a implementação do controlador
         Route::apiResource('encaminhamentos', \App\Http\Controllers\Api\V1\EncaminhamentoController::class)
             ->middleware('permission:encaminhamentos.listar|encaminhamentos.visualizar|encaminhamentos.criar|encaminhamentos.editar|encaminhamentos.eliminar');
+        */
         
         // Sintomas e Triagens - endpoint crítico com limite mais restritivo
         Route::middleware(['throttle:30,1'])->group(function () {
