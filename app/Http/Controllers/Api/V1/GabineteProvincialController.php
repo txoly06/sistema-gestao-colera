@@ -21,7 +21,7 @@ class GabineteProvincialController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * 
      * @OA\Get(
-     *     path="/gabinetes-provinciais",
+     *     path="/gabinetes",
      *     summary="Listar todos os gabinetes provinciais",
      *     description="Retorna uma lista de todos os gabinetes provinciais cadastrados",
      *     operationId="listarGabinetesProvinciais",
@@ -74,7 +74,7 @@ class GabineteProvincialController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * 
      * @OA\Post(
-     *     path="/gabinetes-provinciais",
+     *     path="/gabinetes",
      *     summary="Criar um novo gabinete provincial",
      *     description="Cria um novo registro de gabinete provincial",
      *     operationId="criarGabineteProvincial",
@@ -207,7 +207,7 @@ class GabineteProvincialController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * 
      * @OA\Put(
-     *     path="/gabinetes-provinciais/{id}",
+     *     path="/gabinetes/{id}",
      *     summary="Atualizar um gabinete provincial",
      *     description="Atualiza os dados de um gabinete provincial existente",
      *     operationId="atualizarGabineteProvincial",

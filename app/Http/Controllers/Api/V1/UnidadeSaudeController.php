@@ -19,7 +19,7 @@ class UnidadeSaudeController extends ApiController
      * Display a listing of the resource.
      * 
      * @OA\Get(
-     *     path="/unidades-saude",
+     *     path="/unidades",
      *     summary="Listar todas as unidades de saúde",
      *     description="Retorna uma lista de todas as unidades de saúde cadastradas",
      *     operationId="listarUnidadesSaude",
@@ -74,7 +74,7 @@ class UnidadeSaudeController extends ApiController
      * Store a newly created resource in storage.
      * 
      * @OA\Post(
-     *     path="/unidades-saude",
+     *     path="/unidades",
      *     summary="Criar nova unidade de saúde",
      *     description="Cria um novo registro de unidade de saúde no sistema",
      *     operationId="criarUnidadeSaude",
@@ -183,7 +183,7 @@ class UnidadeSaudeController extends ApiController
      * Display the specified resource.
      * 
      * @OA\Get(
-     *     path="/unidades-saude/{id}",
+     *     path="/unidades/{id}",
      *     summary="Obter detalhes de unidade de saúde",
      *     description="Retorna os dados de uma unidade de saúde específica pelo ID",
      *     operationId="obterUnidadeSaude",
@@ -238,7 +238,7 @@ class UnidadeSaudeController extends ApiController
      * Update the specified resource in storage.
      * 
      * @OA\Put(
-     *     path="/unidades-saude/{id}",
+     *     path="/unidades/{id}",
      *     summary="Atualizar unidade de saúde",
      *     description="Atualiza os dados de uma unidade de saúde existente",
      *     operationId="atualizarUnidadeSaude",
@@ -356,7 +356,7 @@ class UnidadeSaudeController extends ApiController
      * Remove the specified resource from storage.
      * 
      * @OA\Delete(
-     *     path="/unidades-saude/{id}",
+     *     path="/unidades/{id}",
      *     summary="Eliminar unidade de saúde",
      *     description="Remove uma unidade de saúde do sistema",
      *     operationId="eliminarUnidadeSaude",

@@ -117,34 +117,61 @@ class TriagemController extends ApiController
         $query = Triagem::with(['paciente', 'unidadeSaude', 'pontoCuidado'])
                     ->orderBy('created_at', 'desc');
                     
+        // Array para rastrear filtros aplicados        
+        $filtrosAplicados = [];
+        
+        // Contagem total antes de aplicar filtros
+        $totalSemFiltros = Triagem::count();
+        
         // Filtrar por status
-        if ($request->has('status')) {
+        if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
+            $filtrosAplicados['status'] = $request->status;
         }
         
         // Filtrar por nível de urgência 
-        if ($request->has('nivel_urgencia')) {
+        if ($request->has('nivel_urgencia') && $request->nivel_urgencia !== '') {
             $query->where('nivel_urgencia', $request->nivel_urgencia);
+            $filtrosAplicados['nivel_urgencia'] = $request->nivel_urgencia;
         }
         
         // Filtrar por unidade de saúde
-        if ($request->has('unidade_saude_id')) {
+        if ($request->has('unidade_saude_id') && $request->unidade_saude_id !== '') {
             $query->where('unidade_saude_id', $request->unidade_saude_id);
+            $filtrosAplicados['unidade_saude_id'] = $request->unidade_saude_id;
         }
         
         // Filtrar por ponto de cuidado
-        if ($request->has('ponto_cuidado_id')) {
+        if ($request->has('ponto_cuidado_id') && $request->ponto_cuidado_id !== '') {
             $query->where('ponto_cuidado_id', $request->ponto_cuidado_id);
+            $filtrosAplicados['ponto_cuidado_id'] = $request->ponto_cuidado_id;
         }
         
         // Filtrar por probabilidade mínima de cólera
-        if ($request->has('min_probabilidade_colera')) {
+        if ($request->has('min_probabilidade_colera') && $request->min_probabilidade_colera !== '') {
             $query->where('probabilidade_colera', '>=', $request->min_probabilidade_colera);
+            $filtrosAplicados['min_probabilidade_colera'] = $request->min_probabilidade_colera;
         }
         
-        $triagens = $query->paginate($request->per_page ?? 15);
+        // Verificação de contagem antes da paginação para debugging
+        $totalComFiltros = $query->count();
         
-        return $this->successResponse($triagens, 'Triagens obtidas com sucesso');
+        $perPage = $request->per_page ?? 15;
+        $triagens = $query->paginate($perPage);
+        
+        // Adicionar meta-informações na resposta
+        $metaInfo = [
+            'filtros_aplicados' => $filtrosAplicados,
+            'total_registros_sem_filtro' => $totalSemFiltros,
+            'total_com_filtros' => $totalComFiltros
+        ];
+        
+        // Anexar metainfo à resposta
+        $response = $triagens->toArray();
+        $response['meta_info'] = $metaInfo;
+        
+        return $this->successResponse($response, 'Triagens obtidas com sucesso' . 
+            (empty($filtrosAplicados) ? '' : ' - Filtros aplicados: ' . count($filtrosAplicados)));
     }
 
     /**

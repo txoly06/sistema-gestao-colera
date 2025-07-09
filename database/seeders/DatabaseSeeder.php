@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,34 +14,10 @@ class DatabaseSeeder extends Seeder
         // Rodar o seeder de papéis e permissões primeiro
         $this->call(RoleAndPermissionSeeder::class);
         
-        // Criar utilizador administrador de teste
-        $admin = User::factory()->create([
-            'name' => 'Administrador',
-            'email' => 'admin@sistemacolera.gov.ao',
-            'password' => bcrypt('password'),
-        ]);
+        // Rodar o seeder de dados de teste (utilizadores, permissões e dados de demonstração)
+        $this->call(TestDataSeeder::class);
         
-        // Atribuir papel de administrador
-        $admin->assignRole('Administrador');
-        
-        // Criar utilizador gestor de teste
-        $gestor = User::factory()->create([
-            'name' => 'Gestor Provincial',
-            'email' => 'gestor@sistemacolera.gov.ao',
-            'password' => bcrypt('password'),
-        ]);
-        
-        // Atribuir papel de gestor
-        $gestor->assignRole('Gestor');
-        
-        // Criar utilizador médico de teste
-        $medico = User::factory()->create([
-            'name' => 'Dr. Miranda',
-            'email' => 'medico@sistemacolera.gov.ao',
-            'password' => bcrypt('password'),
-        ]);
-        
-        // Atribuir papel de profissional de saúde
-        $medico->assignRole('Profissional_Saude');
+        // Nota: TestDataSeeder já inclui a criação de utilizadores com os papéis específicos,
+        // pacientes, unidades de saúde, pontos de cuidado, veículos e triagens.
     }
 }

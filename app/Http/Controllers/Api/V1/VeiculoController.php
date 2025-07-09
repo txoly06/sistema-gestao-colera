@@ -219,8 +219,10 @@ class VeiculoController extends ApiController
      *     )
      * )
      */
-    public function show(int $id): JsonResponse
+    public function show($id): JsonResponse
     {
+        // Convertendo ID para inteiro
+        $id = (int) $id;
         // Verificar permissão
         if (!auth()->user()->can('ver veiculos')) {
             return $this->errorResponse('Não autorizado', 403);
@@ -473,7 +475,7 @@ class VeiculoController extends ApiController
     /**
      * Atualiza a localização do veículo.
      *
-     * @OA\Patch(
+     * @OA\Put(
      *     path="/veiculos/{id}/localizacao",
      *     summary="Atualiza a localização de um veículo",
      *     description="Atualiza apenas as coordenadas geográficas de um veículo cadastrado",

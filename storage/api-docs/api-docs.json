@@ -333,7 +333,912 @@
                 }
             }
         },
-        "/gabinetes-provinciais": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Autenticar utilizador e obter token",
+                "description": "Realiza login de um utilizador e retorna token Sanctum para autenticação",
+                "operationId": "login",
+                "requestBody": {
+                    "description": "Credenciais de login",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@sistema-colera.ao"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "device_name": {
+                                        "type": "string",
+                                        "example": "Chrome Browser"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login realizado com sucesso."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Admin Usuário"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "admin@sistema-colera.ao"
+                                                        },
+                                                        "roles": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "example": "admin"
+                                                            }
+                                                        },
+                                                        "permissions": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "example": "ver pacientes"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|laravel_sanctum_Xg5JedNwtazEXyYJ9RtzOFcsi4922XGvpDbR8vta"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The email field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Revogar token e encerrar sessão",
+                "description": "Encerra a sessão do utilizador ao revogar o token de autenticação atual",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Logout realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout realizado com sucesso."
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Obter dados do utilizador atual",
+                "description": "Retorna os detalhes do utilizador autenticado, incluindo papéis e permissões",
+                "operationId": "getUser",
+                "responses": {
+                    "200": {
+                        "description": "Dados obtidos com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dados do utilizador obtidos com sucesso."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Admin Usuário"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "admin@sistema-colera.ao"
+                                                },
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "admin"
+                                                    }
+                                                },
+                                                "permissions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "ver pacientes"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/encaminhamentos": {
+            "get": {
+                "tags": [
+                    "Encaminhamentos"
+                ],
+                "summary": "Lista encaminhamentos com filtros e paginação",
+                "description": "Retorna uma lista de encaminhamentos com possibilidade de filtro por status, prioridade, etc.",
+                "operationId": "listarEncaminhamentos",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filtro por status do encaminhamento",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pendente",
+                                "aprovado",
+                                "em_transporte",
+                                "concluido",
+                                "cancelado"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "prioridade",
+                        "in": "query",
+                        "description": "Filtro por nível de prioridade",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "baixa",
+                                "media",
+                                "alta",
+                                "emergencia"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página na paginação",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de encaminhamentos recuperada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Encaminhamentos obtidos com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Encaminhamentos"
+                ],
+                "summary": "Cria um novo encaminhamento",
+                "description": "Registra um novo encaminhamento de paciente",
+                "operationId": "criarEncaminhamento",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "paciente_id",
+                                    "motivo"
+                                ],
+                                "properties": {
+                                    "paciente_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "triagem_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "unidade_origem_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "unidade_destino_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "ponto_cuidado_origem_id": {
+                                        "type": "integer",
+                                        "example": null
+                                    },
+                                    "ponto_cuidado_destino_id": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "responsavel_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "prioridade": {
+                                        "type": "string",
+                                        "example": "alta"
+                                    },
+                                    "motivo": {
+                                        "type": "string",
+                                        "example": "Necessidade de atendimento especializado"
+                                    },
+                                    "observacoes": {
+                                        "type": "string",
+                                        "example": "Paciente com desidratação severa"
+                                    },
+                                    "recursos_necessarios": {
+                                        "type": "object",
+                                        "example": {
+                                            "oxigenio": true,
+                                            "equipamento_especial": "ventilador"
+                                        }
+                                    },
+                                    "previsao_partida": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-06-28T13:30:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Encaminhamento criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Encaminhamento criado com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/encaminhamentos/{id}": {
+            "get": {
+                "tags": [
+                    "Encaminhamentos"
+                ],
+                "summary": "Recupera os detalhes de um encaminhamento específico",
+                "description": "Retorna dados detalhados de um encaminhamento pelo seu ID",
+                "operationId": "obterEncaminhamento",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do encaminhamento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Encaminhamento recuperado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Encaminhamento obtido com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Encaminhamento não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Encaminhamentos"
+                ],
+                "summary": "Atualiza um encaminhamento existente",
+                "description": "Atualiza dados de um encaminhamento pelo seu ID",
+                "operationId": "atualizarEncaminhamento",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do encaminhamento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "unidade_destino_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "ponto_cuidado_destino_id": {
+                                        "type": "integer",
+                                        "example": null
+                                    },
+                                    "prioridade": {
+                                        "type": "string",
+                                        "example": "alta"
+                                    },
+                                    "motivo": {
+                                        "type": "string",
+                                        "example": "Necessidade de atendimento especializado atualizado"
+                                    },
+                                    "observacoes": {
+                                        "type": "string",
+                                        "example": "Paciente com desidratação severa e febre alta"
+                                    },
+                                    "recursos_necessarios": {
+                                        "type": "object",
+                                        "example": {
+                                            "oxigenio": true
+                                        }
+                                    },
+                                    "previsao_partida": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-06-28T14:00:00"
+                                    },
+                                    "previsao_chegada": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-06-28T15:30:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Encaminhamento atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Encaminhamento atualizado com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Encaminhamento não encontrado"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Encaminhamentos"
+                ],
+                "summary": "Remove um encaminhamento existente",
+                "description": "Realiza a exclusão lógica (soft delete) de um encaminhamento",
+                "operationId": "removerEncaminhamento",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do encaminhamento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Encaminhamento removido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Encaminhamento removido com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Encaminhamento não encontrado"
+                    },
+                    "422": {
+                        "description": "Falha ao remover encaminhamento"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/encaminhamentos/pendentes": {
+            "get": {
+                "tags": [
+                    "Encaminhamentos"
+                ],
+                "summary": "Listar encaminhamentos pendentes",
+                "description": "Retorna lista de encaminhamentos com status pendente ou aprovado",
+                "operationId": "encaminhamentosPendentes",
+                "parameters": [
+                    {
+                        "name": "prioridade",
+                        "in": "query",
+                        "description": "Filtro por prioridade",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "baixa",
+                                "media",
+                                "alta",
+                                "emergencia"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "unidade_destino_id",
+                        "in": "query",
+                        "description": "Filtro por unidade destino",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de encaminhamentos pendentes obtida com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Encaminhamentos pendentes obtidos com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/encaminhamentos/{id}/status": {
+            "put": {
+                "tags": [
+                    "Encaminhamentos"
+                ],
+                "summary": "Atualiza o status de um encaminhamento",
+                "description": "Permite mudar o status do encaminhamento (pendente, aprovado, em_transporte, concluido, cancelado)",
+                "operationId": "atualizarStatusEncaminhamento",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do encaminhamento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pendente",
+                                            "aprovado",
+                                            "em_transporte",
+                                            "concluido",
+                                            "cancelado"
+                                        ],
+                                        "example": "aprovado"
+                                    },
+                                    "observacao": {
+                                        "type": "string",
+                                        "example": "Aprovado para transporte imediato"
+                                    },
+                                    "data_inicio_transporte": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "data_chegada": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status do encaminhamento atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Status do encaminhamento atualizado com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Encaminhamento não encontrado"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/encaminhamentos/{id}/atribuir-veiculo": {
+            "put": {
+                "tags": [
+                    "Encaminhamentos"
+                ],
+                "summary": "Atribui um veículo a um encaminhamento",
+                "description": "Permite associar um veículo disponível ao transporte do paciente",
+                "operationId": "atribuirVeiculoEncaminhamento",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do encaminhamento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "veiculo_id"
+                                ],
+                                "properties": {
+                                    "veiculo_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "previsao_partida": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "previsao_chegada": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "observacao": {
+                                        "type": "string",
+                                        "example": "Veículo designado com equipamento de emergência"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Veículo atribuído com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Veículo atribuído ao encaminhamento com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Encaminhamento ou veículo não encontrado"
+                    },
+                    "422": {
+                        "description": "Erro de validação ou veículo indisponível"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/gabinetes": {
             "get": {
                 "tags": [
                     "Gabinetes"
@@ -575,7 +1480,7 @@
                 ]
             }
         },
-        "/gabinetes-provinciais/{id}": {
+        "/gabinetes/{id}": {
             "put": {
                 "tags": [
                     "Gabinetes"
@@ -730,94 +1635,6 @@
                 ]
             }
         },
-        "/mapa/proximos": {
-            "get": {
-                "tags": [
-                    "Mapa"
-                ],
-                "summary": "Encontrar pontos de cuidado próximos",
-                "description": "Retorna pontos de cuidado próximos a uma localização especificada",
-                "operationId": "encontrarPontosProximos",
-                "parameters": [
-                    {
-                        "name": "latitude",
-                        "in": "query",
-                        "description": "Latitude da localização de referência",
-                        "required": true,
-                        "schema": {
-                            "type": "number",
-                            "format": "float"
-                        }
-                    },
-                    {
-                        "name": "longitude",
-                        "in": "query",
-                        "description": "Longitude da localização de referência",
-                        "required": true,
-                        "schema": {
-                            "type": "number",
-                            "format": "float"
-                        }
-                    },
-                    {
-                        "name": "raio",
-                        "in": "query",
-                        "description": "Raio de busca em quilômetros",
-                        "required": false,
-                        "schema": {
-                            "type": "number",
-                            "format": "float",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "limite",
-                        "in": "query",
-                        "description": "Número máximo de resultados a retornar",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 5
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Operação bem-sucedida",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "pontos_proximos": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object"
-                                            }
-                                        },
-                                        "total_encontrado": {
-                                            "type": "integer"
-                                        },
-                                        "raio_km": {
-                                            "type": "number",
-                                            "format": "float"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Erro de validação"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
         "/mapa/veiculos-proximos": {
             "get": {
                 "tags": [
@@ -900,8 +1717,8 @@
                 ]
             }
         },
-        "/mapa/rota": {
-            "get": {
+        "/mapa/calcular-rota": {
+            "post": {
                 "tags": [
                     "Mapa"
                 ],
@@ -910,7 +1727,7 @@
                 "operationId": "calcularRotaMapa",
                 "parameters": [
                     {
-                        "name": "origem_lat",
+                        "name": "origem_latitude",
                         "in": "query",
                         "description": "Latitude do ponto de origem",
                         "required": true,
@@ -920,7 +1737,7 @@
                         }
                     },
                     {
-                        "name": "origem_lng",
+                        "name": "origem_longitude",
                         "in": "query",
                         "description": "Longitude do ponto de origem",
                         "required": true,
@@ -930,7 +1747,7 @@
                         }
                     },
                     {
-                        "name": "destino_lat",
+                        "name": "destino_latitude",
                         "in": "query",
                         "description": "Latitude do ponto de destino",
                         "required": true,
@@ -940,7 +1757,7 @@
                         }
                     },
                     {
-                        "name": "destino_lng",
+                        "name": "destino_longitude",
                         "in": "query",
                         "description": "Longitude do ponto de destino",
                         "required": true,
@@ -1003,7 +1820,7 @@
             }
         },
         "/mapa/geocodificar": {
-            "get": {
+            "post": {
                 "tags": [
                     "Mapa"
                 ],
@@ -1067,14 +1884,46 @@
                 ]
             }
         },
-        "/mapa/casos": {
+        "/mapa/pontos-cuidado-proximos": {
             "get": {
                 "tags": [
                     "Mapa"
                 ],
-                "summary": "Gerar dados para mapa de calor de casos",
-                "description": "Retorna dados de pacientes e triagens para visualização em mapa de calor",
-                "operationId": "mapaDeCasosCalor",
+                "summary": "Encontrar pontos de cuidado próximos",
+                "description": "Retorna pontos de cuidado próximos a uma localização especificada",
+                "operationId": "encontrarPontosCuidadoProximos",
+                "parameters": [
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "Latitude da localização de referência",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "Longitude da localização de referência",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "limite",
+                        "in": "query",
+                        "description": "Número máximo de resultados a retornar",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 5
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Operação bem-sucedida",
@@ -1082,21 +1931,30 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "pontos_calor": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pontos de cuidado próximos encontrados com sucesso"
+                                        },
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "properties": {
-                                                    "latitude": {
-                                                        "type": "number",
-                                                        "format": "float"
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
                                                     },
-                                                    "longitude": {
-                                                        "type": "number",
-                                                        "format": "float"
+                                                    "nome": {
+                                                        "type": "string",
+                                                        "example": "Ponto de Cuidado Central"
                                                     },
-                                                    "peso": {
+                                                    "distancia": {
                                                         "type": "number",
-                                                        "format": "float"
+                                                        "format": "float",
+                                                        "example": 2.5
                                                     }
                                                 },
                                                 "type": "object"
@@ -1108,8 +1966,85 @@
                             }
                         }
                     },
+                    "422": {
+                        "description": "Dados inválidos"
+                    },
+                    "500": {
+                        "description": "Erro ao calcular pontos próximos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/mapa/heat-map-casos": {
+            "get": {
+                "tags": [
+                    "Mapa"
+                ],
+                "summary": "Mapa de calor de casos",
+                "description": "Retorna dados para geração de mapa de calor (heatmap) dos casos de cólera",
+                "operationId": "heatMapCasos",
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dados do mapa de calor obtidos com sucesso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "pontos": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "lat": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": -8.838333
+                                                            },
+                                                            "lng": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 13.234444
+                                                            },
+                                                            "peso": {
+                                                                "type": "integer",
+                                                                "example": 5
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 42
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "403": {
                         "description": "Não autorizado"
+                    },
+                    "500": {
+                        "description": "Erro ao gerar mapa de calor"
                     }
                 },
                 "security": [
@@ -3266,7 +4201,7 @@
                 ]
             }
         },
-        "/unidades-saude": {
+        "/unidades": {
             "get": {
                 "tags": [
                     "Unidades de Saúde"
@@ -3544,7 +4479,7 @@
                 ]
             }
         },
-        "/unidades-saude/{id}": {
+        "/unidades/{id}": {
             "get": {
                 "tags": [
                     "Unidades de Saúde"
@@ -4425,7 +5360,7 @@
             }
         },
         "/veiculos/{id}/localizacao": {
-            "patch": {
+            "put": {
                 "tags": [
                     "Veículos"
                 ],
@@ -4871,6 +5806,10 @@
     },
     "tags": [
         {
+            "name": "Encaminhamentos",
+            "description": "API para gerenciamento de encaminhamentos de pacientes"
+        },
+        {
             "name": "Gabinetes",
             "description": "Gestão de gabinetes provinciais"
         },
@@ -4881,6 +5820,10 @@
         {
             "name": "Relatórios",
             "description": "Endpoints para geração de relatórios"
+        },
+        {
+            "name": "Autenticação",
+            "description": "Endpoints para autenticação de usuários"
         },
         {
             "name": "Pacientes",

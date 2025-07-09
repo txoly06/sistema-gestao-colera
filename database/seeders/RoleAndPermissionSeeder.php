@@ -21,96 +21,107 @@ class RoleAndPermissionSeeder extends Seeder
         // Criar permissões por módulo
         
         // Gabinetes Provinciais
-        Permission::create(['name' => 'gabinetes.listar']);
-        Permission::create(['name' => 'gabinetes.visualizar']);
-        Permission::create(['name' => 'gabinetes.criar']);
-        Permission::create(['name' => 'gabinetes.editar']);
-        Permission::create(['name' => 'gabinetes.eliminar']);
+        Permission::updateOrCreate(['name' => 'gabinetes.listar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'gabinetes.visualizar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'gabinetes.criar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'gabinetes.editar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'gabinetes.eliminar', 'guard_name' => 'sanctum']);
         
         // Unidades de Saúde
-        Permission::create(['name' => 'ver unidades-saude']);
-        Permission::create(['name' => 'criar unidades-saude']);
-        Permission::create(['name' => 'editar unidades-saude']);
-        Permission::create(['name' => 'eliminar unidades-saude']);
-        Permission::create(['name' => 'restaurar unidades-saude']);
-        Permission::create(['name' => 'eliminar-permanente unidades-saude']);
+        Permission::updateOrCreate(['name' => 'ver unidades-saude', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'criar unidades-saude', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'editar unidades-saude', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'eliminar unidades-saude', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'restaurar unidades-saude', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'eliminar-permanente unidades-saude', 'guard_name' => 'sanctum']);
         
         // Pacientes
-        Permission::create(['name' => 'ver pacientes']);
-        Permission::create(['name' => 'criar pacientes']);
-        Permission::create(['name' => 'editar pacientes']);
-        Permission::create(['name' => 'eliminar pacientes']);
-        Permission::create(['name' => 'restaurar pacientes']);
-        Permission::create(['name' => 'eliminar-permanente pacientes']);
-        Permission::create(['name' => 'ver-dados-confidenciais pacientes']);
+        Permission::updateOrCreate(['name' => 'ver pacientes', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'criar pacientes', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'editar pacientes', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'eliminar pacientes', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'restaurar pacientes', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'eliminar-permanente pacientes', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'ver-dados-confidenciais pacientes', 'guard_name' => 'sanctum']);
         
         // Pontos de Cuidados de Emergência
-        Permission::create(['name' => 'ver pontos-cuidado']);
-        Permission::create(['name' => 'criar pontos-cuidado']);
-        Permission::create(['name' => 'editar pontos-cuidado']);
-        Permission::create(['name' => 'eliminar pontos-cuidado']);
-        Permission::create(['name' => 'atualizar-prontidao pontos-cuidado']);
-        Permission::create(['name' => 'atualizar-capacidade pontos-cuidado']);
+        Permission::updateOrCreate(['name' => 'ver pontos-cuidado', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'criar pontos-cuidado', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'editar pontos-cuidado', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'eliminar pontos-cuidado', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'atualizar-prontidao pontos-cuidado', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'atualizar-capacidade pontos-cuidado', 'guard_name' => 'sanctum']);
         
         // Fichas Clínicas
-        Permission::create(['name' => 'fichas.listar']);
-        Permission::create(['name' => 'fichas.visualizar']);
-        Permission::create(['name' => 'fichas.criar']);
-        Permission::create(['name' => 'fichas.editar']);
-        Permission::create(['name' => 'fichas.eliminar']);
+        Permission::updateOrCreate(['name' => 'fichas.listar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'fichas.visualizar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'fichas.criar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'fichas.editar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'fichas.eliminar', 'guard_name' => 'sanctum']);
         
         // Casos de Cólera
-        Permission::create(['name' => 'casos.listar']);
-        Permission::create(['name' => 'casos.visualizar']);
-        Permission::create(['name' => 'casos.criar']);
-        Permission::create(['name' => 'casos.editar']);
-        Permission::create(['name' => 'casos.eliminar']);
-        Permission::create(['name' => 'casos.relatorios']);
+        Permission::updateOrCreate(['name' => 'casos.listar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'casos.visualizar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'casos.criar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'casos.editar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'casos.eliminar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'casos.relatorios', 'guard_name' => 'sanctum']);
         
         // Veículos
-        Permission::create(['name' => 'veiculos.listar']);
-        Permission::create(['name' => 'veiculos.visualizar']);
-        Permission::create(['name' => 'veiculos.criar']);
-        Permission::create(['name' => 'veiculos.editar']);
-        Permission::create(['name' => 'veiculos.eliminar']);
-        Permission::create(['name' => 'veiculos.rastrear']);
+        Permission::updateOrCreate(['name' => 'veiculos.listar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'veiculos.visualizar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'veiculos.criar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'veiculos.editar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'veiculos.eliminar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'veiculos.rastrear', 'guard_name' => 'sanctum']);
         
         // Encaminhamentos
-        Permission::create(['name' => 'encaminhamentos.listar']);
-        Permission::create(['name' => 'encaminhamentos.visualizar']);
-        Permission::create(['name' => 'encaminhamentos.criar']);
-        Permission::create(['name' => 'encaminhamentos.editar']);
-        Permission::create(['name' => 'encaminhamentos.eliminar']);
+        Permission::updateOrCreate(['name' => 'encaminhamentos.listar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'encaminhamentos.visualizar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'encaminhamentos.criar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'encaminhamentos.editar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'encaminhamentos.eliminar', 'guard_name' => 'sanctum']);
         
         // Dashboard e Relatórios
-        Permission::create(['name' => 'dashboard.visualizar']);
-        Permission::create(['name' => 'relatorios.gerar']);
-        Permission::create(['name' => 'relatorios.exportar']);
-        Permission::create(['name' => 'mapas.visualizar']);
+        Permission::updateOrCreate(['name' => 'dashboard.visualizar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'relatorios.gerar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'relatorios.exportar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'mapas.visualizar', 'guard_name' => 'sanctum']);
         
         // Utilizadores e Papéis
-        Permission::create(['name' => 'usuarios.listar']);
-        Permission::create(['name' => 'usuarios.visualizar']);
-        Permission::create(['name' => 'usuarios.criar']);
-        Permission::create(['name' => 'usuarios.editar']);
-        Permission::create(['name' => 'usuarios.eliminar']);
-        Permission::create(['name' => 'papeis.gerenciar']);
+        Permission::updateOrCreate(['name' => 'usuarios.listar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'usuarios.visualizar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'usuarios.criar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'usuarios.editar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'usuarios.eliminar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'papeis.listar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'papeis.visualizar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'papeis.criar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'papeis.editar', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'papeis.eliminar', 'guard_name' => 'sanctum']);
+        
+        // Triagens
+        Permission::updateOrCreate(['name' => 'ver triagens', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'criar triagens', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'editar triagens', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'eliminar triagens', 'guard_name' => 'sanctum']);
+        Permission::updateOrCreate(['name' => 'encaminhar triagens', 'guard_name' => 'sanctum']);
         
         // Criar papéis e atribuir permissões
         
         // Administrador - acesso completo
-        $roleAdmin = Role::create(['name' => 'Administrador']);
-        $roleAdmin->givePermissionTo(Permission::all());
+        $roleAdmin = Role::firstOrCreate(['name' => 'Administrador', 'guard_name' => 'sanctum']);
+        $roleAdmin->givePermissionTo(Permission::where('guard_name', 'sanctum')->get());
         
         // Gestor - acesso de gestão mas não pode eliminar nem acessar configurações avançadas
-        $roleGestor = Role::create(['name' => 'Gestor']);
+        $roleGestor = Role::firstOrCreate(['name' => 'Gestor', 'guard_name' => 'sanctum']);
         $roleGestor->givePermissionTo([
             // Visualização geral
             'dashboard.visualizar', 'relatorios.gerar', 'relatorios.exportar', 'mapas.visualizar',
             // Gestão de entidades
             'gabinetes.listar', 'gabinetes.visualizar', 'gabinetes.criar', 'gabinetes.editar',
-            'unidades.listar', 'unidades.visualizar', 'unidades.criar', 'unidades.editar',
-            'pacientes.listar', 'pacientes.visualizar',
+            'ver unidades-saude', 'criar unidades-saude', 'editar unidades-saude',
+            'ver pacientes', 'criar pacientes',
             'casos.listar', 'casos.visualizar', 'casos.relatorios',
             'veiculos.listar', 'veiculos.visualizar', 'veiculos.rastrear',
             'encaminhamentos.listar', 'encaminhamentos.visualizar',
@@ -118,9 +129,9 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
         
         // Profissional de Saúde - acesso clínico
-        $roleProfissionalSaude = Role::create(['name' => 'Profissional_Saude']);
+        $roleProfissionalSaude = Role::firstOrCreate(['name' => 'Profissional_Saude', 'guard_name' => 'sanctum']);
         $roleProfissionalSaude->givePermissionTo([
-            'pacientes.listar', 'pacientes.visualizar', 'pacientes.criar', 'pacientes.editar', 'pacientes.ver_dados_confidenciais',
+            'ver pacientes', 'criar pacientes', 'editar pacientes', 'ver-dados-confidenciais pacientes',
             'fichas.listar', 'fichas.visualizar', 'fichas.criar', 'fichas.editar',
             'casos.listar', 'casos.visualizar', 'casos.criar', 'casos.editar',
             'encaminhamentos.listar', 'encaminhamentos.visualizar', 'encaminhamentos.criar',
@@ -128,16 +139,15 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
         
         // Técnico - suporte técnico e logística
-        $roleTecnico = Role::create(['name' => 'Tecnico']);
+        $roleTecnico = Role::firstOrCreate(['name' => 'Tecnico', 'guard_name' => 'sanctum']);
         $roleTecnico->givePermissionTo([
-            'unidades.listar', 'unidades.visualizar',
+            'ver unidades-saude',
             'veiculos.listar', 'veiculos.visualizar', 'veiculos.editar', 'veiculos.rastrear',
-            'encaminhamentos.listar', 'encaminhamentos.visualizar',
-            'mapas.visualizar'
+            'dashboard.visualizar', 'mapas.visualizar'
         ]);
         
         // Condutor - apenas para gestão de veículos
-        $roleCondutor = Role::create(['name' => 'Condutor']);
+        $roleCondutor = Role::firstOrCreate(['name' => 'Condutor', 'guard_name' => 'sanctum']);
         $roleCondutor->givePermissionTo([
             'veiculos.visualizar', 'veiculos.rastrear',
             'encaminhamentos.visualizar',
@@ -145,9 +155,9 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
         
         // Paciente - apenas acessa informações próprias
-        $rolePaciente = Role::create(['name' => 'Paciente']);
+        $rolePaciente = Role::firstOrCreate(['name' => 'Paciente', 'guard_name' => 'sanctum']);
         $rolePaciente->givePermissionTo([
-            'pacientes.visualizar', // Apenas próprios dados
+            'ver pacientes', // Apenas próprios dados
             'fichas.visualizar',    // Apenas próprias fichas
             'casos.visualizar'      // Apenas próprios casos
         ]);

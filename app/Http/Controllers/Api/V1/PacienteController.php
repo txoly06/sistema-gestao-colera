@@ -253,6 +253,11 @@ class PacienteController extends ApiController
      */
     public function show($id): JsonResponse
     {
+        // Verificar permissão
+        if (!auth()->user()->can('ver pacientes')) {
+            return $this->errorResponse('Não autorizado', 403);
+        }
+
         try {
             $paciente = Paciente::findOrFail($id);
 
@@ -474,7 +479,10 @@ class PacienteController extends ApiController
     
     /**
      * Generate QR Code for a patient
-     * 
+     *
+     * @param int $id ID do paciente
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     *
      * @OA\Get(
      *     path="/pacientes/{id}/qrcode",
      *     summary="Gerar QR Code para identificação de paciente",
@@ -523,7 +531,7 @@ class PacienteController extends ApiController
      *     )
      * )
      */
-    public function generateQrCode($id): JsonResponse
+    public function generateQrCode($id)
     {
         // Verificar permissão
         if (!auth()->user()->can('ver pacientes')) {

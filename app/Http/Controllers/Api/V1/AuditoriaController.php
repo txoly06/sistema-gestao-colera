@@ -201,7 +201,7 @@ class AuditoriaController extends BaseController
         $atividade = Activity::with(['causer'])->find($id);
         
         if (!$atividade) {
-            return $this->errorResponse('Registro de auditoria não encontrado', 404);
+            return $this->errorResponse('Registro de auditoria não encontrado', [], 404);
         }
         
         return $this->successResponse(
@@ -301,7 +301,7 @@ class AuditoriaController extends BaseController
     {
         // Validação do usuário
         if (!\App\Models\User::find($usuarioId)) {
-            return $this->errorResponse('Usuário não encontrado', 404);
+            return $this->errorResponse('Usuário não encontrado', [], 404);
         }
         
         // Consulta

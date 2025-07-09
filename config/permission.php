@@ -2,6 +2,11 @@
 
 return [
 
+    /*
+     * Define o guard padrão para ser usado pelo pacote Spatie Permission
+     */
+    'default_guard_name' => 'sanctum',
+
     'models' => [
 
         /*
